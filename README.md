@@ -41,15 +41,19 @@ WinForms tabanlı sahte bir servis (“Invoice Service”) ve MySQL Outbox ile, 
 ## 📝 Kod Örneği – Polly Resilience Handler
 
 ```csharp
-builder.Services.AddHttpClient("InvoiceClient")
-  .AddStandardResilienceHandler(o =>
-  {
-      o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(5);
-      o.AttemptTimeout.Timeout      = TimeSpan.FromSeconds(3);
-      o.Retry.MaxRetryAttempts      = 3;
-      o.CircuitBreaker.MinimumThroughput = 6;
-      o.CircuitBreaker.FailureRatio      = 0.5;
-  });
+builder.Services.AddHttpClient("InvoiceClient", c =>
+{
+    c.BaseAddress = new Uri("http://localhost:5057/"); // Invoice.Winforms uygulaması
+})
+.AddStandardResilienceHandler(o => // Polly ayarları
+{
+    o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(5); // Tüm denemeler dahil
+    o.AttemptTimeout.Timeout = TimeSpan.FromSeconds(3); // Her deneme için
+    o.Retry.MaxRetryAttempts = 3; // 3 yeniden deneme
+    o.CircuitBreaker.MinimumThroughput = 6; // En az 6 istek
+    o.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(20); // 20 saniyelik pencere
+    o.CircuitBreaker.FailureRatio = 0.5; // %50 hata
+}); // 3. denemeden sonra devre kesici açılır ve 1 dakika boyunca istek atılmaz
 ```
 
 ---

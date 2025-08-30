@@ -7,7 +7,7 @@ WinForms tabanlı sahte bir servis (“Invoice Service”) ve MySQL Outbox ile, 
 
 ## 📂 İçerik Yapısı
 
-- **Invoice.Winforms** – Aç/kapa yapabileceğin sahte invoice servisi.  
+- **Invoice.Winforms** – Aç/kapa yapabileceğin deneme invoice servisi.  
 - **ECommerce.Api** – Polly destekli HttpClient ve MySQL Outbox ile asenkron fatura işleme API’si.
 
 ---
